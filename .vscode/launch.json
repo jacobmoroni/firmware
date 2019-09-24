@@ -1,0 +1,66 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "I2C Sniff",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "executable": "${workspaceRoot}/examples/i2c_sniff/obj/i2csniff.elf",
+            "device": "STM32F405",
+            "svdFile": "/home/jacob/Downloads/STM32F405.svd",
+            "configFiles": [
+                "interface/stlink-v2.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "runToMain": true
+        },
+
+        {
+            "name": "I2C Baro",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "executable": "${workspaceRoot}/examples/i2c_baro/obj/i2c_baro.elf",
+            "device": "STM32F405",
+            "svdFile": "/home/jacob/Downloads/STM32F405.svd",
+            "configFiles": [
+                "interface/stlink-v2.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "runToMain": true
+        },
+
+        {
+            "name": "Backup SRAM",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "executable": "${workspaceRoot}/examples/backup_sram/obj/backup_sram.elf",
+            "device": "STM32F405",
+            "svdFile": "/home/jacob/Downloads/STM32F405.svd",
+            "configFiles": [
+                "interface/stlink-v2.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "runToMain": true
+        },
+        {
+            "name": "Time",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "executable": "${workspaceRoot}/examples/time/obj/time.elf",
+            "device": "STM32F405",
+            "svdFile": "/home/jacob/Downloads/STM32F405.svd",
+            "configFiles": [
+                "interface/stlink-v2.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "runToMain": true
+        }
+    ]
+}

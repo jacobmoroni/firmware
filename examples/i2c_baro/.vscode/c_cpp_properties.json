@@ -1,0 +1,33 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/jacob/workspaces/nist_mapping_ws/devel/include",
+        "/opt/ros/melodic/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/map_merger/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/obstacle_avoidance/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/optitrack_vrpn/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/qt_planner/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/realsense/ddynamic_reconfigure/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/realsense/realsense2_camera/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/relative_nav/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/rmekf/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/rosflight/rosflight/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/rosflight/rosflight_firmware/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/rosflight_plugins/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/rosflight/rosflight_sim/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/rosflight/rosflight_utils/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/rotor_controller/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/rotor_estimator/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/vo_sim/include",
+        "/home/jacob/workspaces/nist_mapping_ws/src/vrpn_transform/include",
+        "/usr/include"
+      ],
+      "name": "Linux"
+    }
+  ]
+}
