@@ -648,6 +648,8 @@ int8_t I2C::checkPresent(uint8_t addr, void (*cb)(int8_t))
     return_code_ = RESULT_SUCCESS;
     if (blocking)
       waitToFinish;
+    // This seems to be the problem maybe, waitToFinish resets return_code_ to 0
+    // Watching the I2C line still is no signal on saleae
     return return_code_;
   }
   else

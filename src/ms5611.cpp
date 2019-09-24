@@ -41,7 +41,7 @@ bool MS5611::init(I2C* _i2c)
   baro_ptr = this;
   i2c_ = _i2c;
   baro_present_ = false;
-  while (millis() < 10);  // wait for chip to power on
+  while (millis() < 100);  // wait for chip to power on
   
   next_update_ms_ = millis();
   last_update_ms_ = millis();
@@ -57,7 +57,7 @@ bool MS5611::init(I2C* _i2c)
   else
   {
     baro_present_ = false;
-    return false;
+    // return false;
   }
 
   reset();
@@ -113,7 +113,8 @@ void MS5611::update()
   if (!baro_present_)
   {
       callback_type_ = CB_PRESENT;
-      i2c_->checkPresent(ADDR, &cb);
+      if (i2c_->checkPresent(ADDR, &cb) == 1)
+        baro_present_ = true;
   }
   else
   {
@@ -271,17 +272,36 @@ bool MS5611::read_pres_meas()
   callback_type_ = CB_PRES_READ;
   uint8_t byte = ADC_READ;
   i2c_->clearLog();
-  if (i2c_->addJob(I2C::TaskType::START)
-    && i2c_->addJob(I2C::TaskType::WRITE_MODE, ADDR)
-    && i2c_->addJob(I2C::TaskType::WRITE, 0, &byte, 1)
-    && i2c_->addJob(I2C::TaskType::STOP, 0, 0, 0, 0)
-    && i2c_->addJob(I2C::TaskType::START)
-    && i2c_->addJob(I2C::TaskType::READ_MODE, ADDR)
-    && i2c_->addJob(I2C::TaskType::READ, 0, pres_buf_, 3)
-    && i2c_->addJob(I2C::TaskType::STOP, 0, 0, 0, &cb))
-    return true;
+  i2c_->beginJob();
+  if (i2c_->addTaskStart()
+    && i2c_->addTaskWriteMode(ADDR)
+    && i2c_->addTaskWrite(&byte, 1)
+    && i2c_->addTaskStop()
+    && i2c_->addTaskStart()
+    && i2c_->addTaskReadMode(ADDR)
+    && i2c_->addTaskRead(pres_buf_, 3)
+    && i2c_->addTaskStop(&cb))
+    {
+      i2c_->finalizeJob();
+      return true;
+    }
   else
+  {
+    i2c_->finalizeJob();
     return false;
+  }  
+  // i2c_->finalizeJob();
+  // if (i2c_->addJob(I2C::TaskType::START)
+  //   && i2c_->addJob(I2C::TaskType::WRITE_MODE, ADDR)
+  //   && i2c_->addJob(I2C::TaskType::WRITE, 0, &byte, 1)
+  //   && i2c_->addJob(I2C::TaskType::STOP, 0, 0, 0, 0)
+  //   && i2c_->addJob(I2C::TaskType::START)
+  //   && i2c_->addJob(I2C::TaskType::READ_MODE, ADDR)
+  //   && i2c_->addJob(I2C::TaskType::READ, 0, pres_buf_, 3)
+  //   && i2c_->addJob(I2C::TaskType::STOP, 0, 0, 0, &cb))
+  //   return true;
+  // else
+  //   return false;
 }
 
 bool MS5611::read_temp_meas()
@@ -291,17 +311,37 @@ bool MS5611::read_temp_meas()
   callback_type_ = CB_TEMP_READ;
   uint8_t byte = ADC_READ;
   i2c_->clearLog();
-  if (i2c_->addJob(I2C::TaskType::START)
-    && i2c_->addJob(I2C::TaskType::WRITE_MODE, ADDR)
-    && i2c_->addJob(I2C::TaskType::WRITE, 0, &byte, 1)
-    && i2c_->addJob(I2C::TaskType::STOP, 0, 0, 0, 0)
-    && i2c_->addJob(I2C::TaskType::START)
-    && i2c_->addJob(I2C::TaskType::READ_MODE, ADDR)
-    && i2c_->addJob(I2C::TaskType::READ, 0, temp_buf_, 3)
-    && i2c_->addJob(I2C::TaskType::STOP, 0, 0, 0, &cb))
+  i2c_->beginJob();
+  if (i2c_->addTaskStart() 
+    && i2c_->addTaskWriteMode(ADDR) 
+    && i2c_->addTaskWrite(&byte, 1) 
+    && i2c_->addTaskStop() 
+    && i2c_->addTaskStart() 
+    && i2c_->addTaskReadMode(ADDR) 
+    && i2c_->addTaskRead(temp_buf_, 3) 
+    && i2c_->addTaskStop(&cb))
+    {
+      i2c_->finalizeJob();
       return true;
+    }
   else
+  {
+    i2c_->finalizeJob();
     return false;
+  }
+  // i2c_->finalizeJob();
+
+  // if (i2c_->addJob(I2C::TaskType::START)
+  //   && i2c_->addJob(I2C::TaskType::WRITE_MODE, ADDR)
+  //   && i2c_->addJob(I2C::TaskType::WRITE, 0, &byte, 1)
+  //   && i2c_->addJob(I2C::TaskType::STOP, 0, 0, 0, 0)
+  //   && i2c_->addJob(I2C::TaskType::START)
+  //   && i2c_->addJob(I2C::TaskType::READ_MODE, ADDR)
+  //   && i2c_->addJob(I2C::TaskType::READ, 0, temp_buf_, 3)
+  //   && i2c_->addJob(I2C::TaskType::STOP, 0, 0, 0, &cb))
+  //     return true;
+  // else
+  //   return false;
 }
 
 void MS5611::temp_read_cb(uint8_t result)
@@ -310,8 +350,8 @@ void MS5611::temp_read_cb(uint8_t result)
   state_ = START_PRESS;
   waiting_for_cb_ = false;
   last_update_ms_ = millis();
-  next_update_ms_ = last_update_ms_ + 10;
   new_data_ = true;
+  next_update_ms_ = last_update_ms_ + 10;
 }
 
 void MS5611::pres_read_cb(uint8_t result)
@@ -320,8 +360,8 @@ void MS5611::pres_read_cb(uint8_t result)
   state_ = START_TEMP;
   waiting_for_cb_ = false;
   last_update_ms_ = millis();
-  next_update_ms_ = last_update_ms_ + 10;
   new_data_ = true;
+  next_update_ms_ = last_update_ms_ + 10;
 }
 
 void MS5611::temp_start_cb(uint8_t result)
